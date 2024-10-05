@@ -5,28 +5,14 @@ export type AppConfig = {
   version: string;
   apiPrefix: string;
   frontendDomain?: string;
-  jwtSecret: string;
   port: string;
 };
 
 export type DatabaseConfig = {
-  mongoUri?: string;
-};
-
-export type MailConfig = {
-  port: number;
-  host?: string;
-  user?: string;
-  password?: string;
-  defaultEmail?: string;
-  defaultName?: string;
-  ignoreTLS: boolean;
-  secure: boolean;
-  requireTLS: boolean;
+  mongoUrl?: string;
 };
 
 export type AllConfigType = {
   app: AppConfig;
   database: DatabaseConfig;
-  mail: MailConfig;
 };

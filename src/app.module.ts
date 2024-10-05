@@ -3,16 +3,20 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard, RolesGuard } from './auth/guards';
-import { PrismaService } from './prisma/prisma.service';
-import { PrismaModule } from './prisma/prisma.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ProductsModule } from './products/products.module';
+import { VendorModule } from './vendor/vendor.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), UsersModule, AuthModule, PrismaModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    MongooseModule.forRoot(
+      'mongodb+srv://gazmorabdiu:KvNNOcrcvQsAAElN@cluster0.zpz6c.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
+    ),
+    ProductsModule,
+    VendorModule,
+  ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService],
 })
 export class AppModule {}

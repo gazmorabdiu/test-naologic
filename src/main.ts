@@ -11,7 +11,7 @@ import validationPipeOption from './utils/pipes/global.validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
-  app.use(helmet());
+  // app.use(helmet());
   // TODO : fix error : misconfigured csrf
 
   //app.use(csurf());
