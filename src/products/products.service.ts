@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -10,24 +9,22 @@ import { Item } from 'src/utils/interfaces/item.interface';
 import { Manufacturer } from 'src/utils/interfaces/manufacturer.interface';
 import { Category } from 'src/utils/interfaces/category.interface';
 import { Types } from 'mongoose';
+import { Vendor } from 'src/utils/interfaces';
+import { VendorService } from 'src/vendor/vendor.service';
+import { OpenAiService } from 'src/open-ai/open-ai.service';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsService {
-  // create(createProductDto: CreateProductDto):Promise<Product>{
-  //   return 'This action adds a new product';
-  // }
   constructor(
     @InjectModel('Product') private readonly productModel: Model<Product>,
     @InjectModel('Item') private readonly itemModel: Model<Item>,
     @InjectModel('Manufacturer')
     private readonly manufacturerModel: Model<Manufacturer>,
     @InjectModel('Category') private readonly categoryModel: Model<Category>,
+    private readonly vendorService: VendorService,
+    private readonly openAIService: OpenAiService,
   ) {}
-
-  async create(createProductDto: CreateProductDto) {
-    const createdProduct = new this.productModel(createProductDto);
-    return createdProduct.save();
-  }
 
   convertCsvToJson(filePath: string): Promise<Product[]> {
     return new Promise((resolve, reject) => {
@@ -74,6 +71,8 @@ export class ProductsService {
         itemId: row.ItemID,
       });
 
+      const vendor = await this.vendorService.getRandomVendors(1);
+
       const productData = {
         productId: row.ProductID,
         productName: row.ProductName,
@@ -82,6 +81,13 @@ export class ProductsService {
           _id: category._id,
           categoryId: category.categoryId,
           categoryName: category.categoryName,
+        },
+        vendor: {
+          _id: vendor[0]._id,
+          email: vendor[0].email,
+          phoneNumber: vendor[0].phoneNumber,
+          address: vendor[0].address,
+          createdAt: vendor[0].createdAt,
         },
         manufacturer: {
           _id: manufacturer._id,
@@ -114,18 +120,26 @@ export class ProductsService {
   }
 
   // Helper function to upsert product (update if exists, create if not)
-  private async upsertProduct(productData: any): Promise<Product> {
+  async upsertProduct(productData: any): Promise<Product> {
     const existingProduct = await this.productModel
       .findOne({
         productID: productData.productId,
         'manufacturer._id': productData.manufacturer._id,
+        'item._id': productData.item._id,
       })
       .exec();
 
     if (existingProduct) {
       // Update the existing product with new data
       await this.productModel
-        .updateOne({ productID: productData.productId }, productData)
+        .updateOne(
+          {
+            productID: productData.productId,
+            'manufacturer._id': productData.manufacturer._id,
+            'item._id': productData.item._id,
+          },
+          productData,
+        )
         .exec();
       return this.productModel
         .findOne({ productID: productData.productId })
@@ -177,7 +191,16 @@ export class ProductsService {
     return item;
   }
 
-  findAll() {
-    return this.productModel.find({});
+  async findAll(): Promise<any[]> {
+    return this.productModel
+      .find({})
+      .populate('category')
+      .populate('manudacturer')
+      .populate('item')
+      .exec();
+  }
+
+  async updateProduct(id: string, product: UpdateProductDto) {
+    return this.productModel.findByIdAndUpdate(id, product);
   }
 }

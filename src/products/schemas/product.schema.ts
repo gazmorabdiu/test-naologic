@@ -27,6 +27,7 @@ export const ProductSchema = new Schema<Product>({
   category: { type: Types.ObjectId, ref: 'Category', required: true },
   manufacturer: { type: Types.ObjectId, ref: 'Manufacturer', required: true },
   item: { type: Types.ObjectId, ref: 'Item', required: true },
+  vendor: { type: Types.ObjectId, ref: 'Vendor', required: true },
   itemDescription: { type: String, default: '' },
   imageFileName: { type: String, default: '' },
   itemImageURL: { type: String, default: '' },

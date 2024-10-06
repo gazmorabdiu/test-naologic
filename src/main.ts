@@ -4,17 +4,13 @@ import { AppModule } from './app.module';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { useContainer } from 'class-validator';
-import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './utils/errors';
 import validationPipeOption from './utils/pipes/global.validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
-  // app.use(helmet());
-  // TODO : fix error : misconfigured csrf
 
-  //app.use(csurf());
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(ConfigService<AllConfigType>);
 

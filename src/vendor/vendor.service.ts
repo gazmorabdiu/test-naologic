@@ -10,6 +10,12 @@ import { faker } from '@faker-js/faker';
 export class VendorService {
   constructor(@InjectModel('Vendor') private vendorModel: Model<Vendor>) {}
 
+  async getRandomVendors(limit: number) {
+    return this.vendorModel.aggregate([
+      { $sample: { size: limit } }, // Fetch 'limit' number of random vendors
+    ]);
+  }
+
   // Function to generate 100 random vendors
   async createRandomVendors(): Promise<any> {
     const vendors = [];

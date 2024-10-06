@@ -6,6 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProductsModule } from './products/products.module';
 import { VendorModule } from './vendor/vendor.module';
+import { OpenAiService } from './open-ai/open-ai.service';
+import { OpenAiModule } from './open-ai/open-ai.module';
 
 @Module({
   imports: [
@@ -15,8 +17,9 @@ import { VendorModule } from './vendor/vendor.module';
     ),
     ProductsModule,
     VendorModule,
+    OpenAiModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, OpenAiService],
 })
 export class AppModule {}

@@ -9,6 +9,10 @@ import {
   ManufacturerSchema,
 } from './schemas';
 import { MulterModule } from '@nestjs/platform-express';
+import { VendorModule } from 'src/vendor/vendor.module';
+import { VendorService } from 'src/vendor/vendor.service';
+import { VendorSchema } from 'src/vendor/schemas';
+import { OpenAiService } from 'src/open-ai/open-ai.service';
 
 @Module({
   imports: [
@@ -29,12 +33,14 @@ import { MulterModule } from '@nestjs/platform-express';
         name: 'Manufacturer',
         schema: ManufacturerSchema,
       },
+      { name: 'Vendor', schema: VendorSchema },
     ]),
+    VendorModule,
     MulterModule.register({
       dest: './uploads', // Set upload destination
     }),
   ],
   controllers: [ProductsController],
-  providers: [ProductsService],
+  providers: [ProductsService, VendorService, OpenAiService],
 })
 export class ProductsModule {}
