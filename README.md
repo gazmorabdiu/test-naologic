@@ -1,7 +1,7 @@
 ## Install npm package
 
 ```
-npm i;
+npm i
 ```
 
 ## Run app
