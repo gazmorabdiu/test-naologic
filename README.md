@@ -1,73 +1,90 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+## Install npm package
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
+```
+npm i;
 ```
 
-## Running the app
+## Run app
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```
+npm run start
 ```
 
-## Test
+# Naologic Task
 
-```bash
-# unit tests
-$ npm run test
+### Scenario:
 
-# e2e tests
-$ npm run test:e2e
+##### Every day, we pull a large CSV file (images40.txt) with products, parse the file into our format and insert, update or delete products from our database. (the delete step must have a flag and be an option)
 
-# test coverage
-$ npm run test:cov
-```
+##### Import a very large CSV file, convert the data to the JSON format indicated in the sample-products.json and save it to Mongo. DO NOT import sample-products.json. That serves as an example of the format we are expecting you to convert images40.txt to.
 
-## Support
+##### Before saving a product, you need to make sure that all vendors are up to date and you will use the document ids for vendorId and manufacturerId.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+##### At the end of each
 
-## Stay in touch
+###### Tech:
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- Typescript
+- Mongo
+- Nestjs + Schedulers
+- LangChanTS
 
-## License
+###### Prerequisites:
 
-Nest is [MIT licensed](LICENSE).
+- Understand what products with variants is
+- Check what data needs to be saved before
+- You are the owner of the task, you decide
+- If you see a value that is referenced from somewhere else, unknown, just simulate it.
+- Deduct the data format based on sample
+
+###### Information:
+
+- There are 2 variants: ItemDescription → description and Packaging → packaging fields
+  docId is a internal id we generate with nanoid v4
+- Options[].id is just a random string
+- There are 100k+ rows that should turn into 13k products (if variants are generated correctly)
+- You only have 2GB of RAM available
+- Each ProductID must be unique across all records.
+- The ItemID must be unique within the context of its respective ProductID group.
+- During imports, product data may be modified, requiring updates or deletions of existing products based on the new information.
+- When deleting products, consider handling cases where products might already be associated with existing orders and determine the appropriate action.
+- To retrieve comprehensive information for a specific product, group all related records by ProductID.
+
+###### Ignore:
+
+- Categories
+- Everything that is not in the data{} in the JSON
+
+### Your task:
+
+#### Import all the products and vendors using a scheduled task that runs once per day.
+
+#### All products must have their description field enhanced using OpenAI by passing the name and category. If the product has a description, pass it for enhancement. Some products are missing descriptions, so use only name and category.
+
+- unset
+
+  - You are an expert in medical sales. Your specialty is medical consumables used by hospitals on a daily basis.
+    Your task to enhance the description of a product based on the information provided.
+
+    - Product name: $name
+    - Product description: $description
+    - Category: $nameOfCategory
+    - New Description:
+
+### What did I do?
+
+#### Based on the samples I had and my understanding of the task, here’s a step-by-step overview:
+
+- I implemented HTTP endpoints to upload CSV files (the sample text file was too large, so I only used a few lines from it).
+- I created Swagger documentation to display the available endpoints for this task.
+- While I worked on converting the data as requested, I encountered some issues with the requirements.
+- The productID was supposed to be unique, but during debugging, I found products with the same ID but different manufacturers in the text file. In the sample JSON, not all variants had the same itemId. Due to this, I opted not to convert based on variants. Instead, I structured the data into models for product, vendor, item, category, and manufacturer.
+- During CSV import, the data is converted into my model structure and stored as documents in MongoDB (using Mongoose).
+- I initially tried to use LangChainTS, but after extensive research, I decided to go with the standard OpenAI integration.
+- I also created a daily scheduled task that calls OpenAI to generate descriptions based on productName and category. However, I couldn't test this fully, as each model I used requires a billing plan.
+
+##### !NOTE
+
+- openAI service may crash your app because no token and model have been added.
+
+#### This was a different challenge for me, and a completely new experience. I may not have completed the task perfectly, but I recognize that I have a lot to learn, and I’m eager to improve. Thank you for your time
